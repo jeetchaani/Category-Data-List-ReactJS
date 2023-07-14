@@ -1,24 +1,50 @@
-import logo from './logo.svg';
+import Navbar from './Navbar';
+import { apiData } from './Api';
 import './App.css';
+import { useState } from 'react';
+
+const categoryArray = [...new Set(apiData.map((cateElement) =>{
+       return cateElement.name;
+})) ];
 
 function App() {
+  const [apiDataList,setApiDataList] = useState(apiData);
+  const loadItem = (category) =>{
+    //filter data
+     if(category==="All")
+     {
+        setApiDataList(apiData);
+        return;
+     }
+
+     const updatedData = apiData.filter((currentData) =>{
+       return currentData.name===category;
+     })
+     console.log(updatedData);
+     setApiDataList(updatedData);
+     
+}
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+         <Navbar loadItem={loadItem} categoryArray={categoryArray}/>
+         <main> 
+            { apiDataList.map((currentElement) =>{
+              const { id, name, description } = currentElement;
+                  return(
+                    <>
+              <div className="container" id={id} key={id}>
+                <h3>{name}</h3>
+               <div className='desc'>
+                   {description}
+               </div>
+             </div>
+                    </>
+                  )
+            }) }
+             
+               
+          </main>
+    </>
   );
 }
 
